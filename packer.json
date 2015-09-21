@@ -1,0 +1,54 @@
+{
+  "builders": [
+    {
+      "boot_command": [
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter>"
+      ],
+      "guest_os_type": "RedHat_64",
+      "headless": "false",
+      "http_directory": ".",
+      "iso_checksum": "171ce654ec06040d096daf75934ca8ca",
+      "iso_checksum_type": "md5",
+      "iso_url": "http://centos.ufms.br/6.7/isos/x86_64/CentOS-6.7-x86_64-netinstall.iso",
+      "shutdown_command": "echo 'vagrant' | sudo -S /sbin/halt -h -p",
+      "ssh_password": "vagrant",
+      "ssh_username": "vagrant",
+      "ssh_wait_timeout": "50000s",
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "1024"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "4"
+        ]
+      ],
+      "vm_name": "centos6.7"
+    }
+  ],
+  "post-processors": [
+    {
+      "output": "centos6x64.box",
+      "type": "vagrant"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+      "scripts": [
+        "vagrant.sh",
+        "virtualbox.sh",
+        "sysadmin.sh",
+        "cleanup.sh"
+      ],
+      "type": "shell"
+    }
+  ]
+}
+
